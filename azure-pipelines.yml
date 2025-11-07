@@ -4,6 +4,8 @@
 # https://aka.ms/yaml
 
 trigger:
+ - main
+
 
 
 pool:
@@ -13,7 +15,24 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: Maven@4
+  inputs:
+    azureSubscription: 'AzureNittesh(120bd4d4-363a-42a5-b5da-668f418bbe21)'
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: 'calsi_artifact'
+    publishLocation: 'pipeline'
+
+
+
